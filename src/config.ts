@@ -1,4 +1,5 @@
 export default {
     HTTP_PORT: 3000,
-    JWT_SECRET: 'REPLACE_ME'
+    JWT_SECRET: 'REPLACE_ME',
+    DB_STRING: ''
 };

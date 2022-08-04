@@ -2,7 +2,8 @@ import { Response, Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 import config from '../../config';
-import { User } from '../../database/entities/User';
+import db, {user} from '../../lib/database'
+
 import { ranks } from '../../lib/routes';
 import { comparePassword } from '../../lib/security';
 import { RequestPayload, Route } from '../../types';
@@ -14,12 +15,15 @@ const Routes : Route[] = [
         secure: true,
         permission : 'wildcard',
         handler: async (req: Request, res: Response) => {      
-            var user = await getRepository(User).findOne ({ where : {id : (req.payload as RequestPayload).userId}})
-            if(user){
+            var _user = await user(db).findOne({ id: (req.payload as RequestPayload).userId});
+
+            if(_user != null){
+                _user = _user[0];
+
                 res.status(200).send(
                     {
-                        user: user,
-                        permissions: ranks.get(user.rank).securityPermissions.map(a => a.name)
+                        user: _user,
+                        permissions: ranks.get(_user.rank).securityPermissions.map(a => a.name)
                     }
                 )
             }else{
@@ -38,20 +42,21 @@ const Routes : Route[] = [
             var user;
 
             if(email){
-                user = await getRepository(User).findOne(
+                user = await user(db).findOne(
                     {
                         email: email,                    
                     }
                 )
             }else if(username){
-                user = getRepository(User).findOne(
+                user = await user(db).findOne(
                     {
                         username: username,                    
                     }
                 )
             }
             
-            if(user){
+            if(user != null){
+                user = user[0];
                 if(await comparePassword(user.password, password)){
                     let expiresIn = 129600;
 
