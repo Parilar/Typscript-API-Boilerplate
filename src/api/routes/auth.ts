@@ -13,7 +13,7 @@ const Routes : Route[] = [
         path: '/auth/me',
         method: 'get',
         secure: true,
-        permission : 'wildcard',
+        permission : 'User:Auth',
         handler: async (req: Request, res: Response) => {      
             var _user = await user(db).findOne({ id: (req.payload as RequestPayload).userId});
 
@@ -57,6 +57,7 @@ const Routes : Route[] = [
             
             if(user != null){
                 user = user[0];
+                
                 if(await comparePassword(user.password, password)){
                     let expiresIn = 129600;
 
