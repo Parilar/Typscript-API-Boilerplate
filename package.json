@@ -36,7 +36,6 @@
   "scripts": {
     "start": "ts-node src/index.ts 8899",
     "sync": "ts-node src/sync.ts",    
-    "permissions": "ts-node src/syncTypes.ts",
     "generate": "npx @databases/mysql-schema-cli --database mysql://api:123456@localhost:3306/api --directory ./src/__generated__"
   },
   "author": "",

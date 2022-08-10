@@ -4,7 +4,9 @@ export type Wrapper = (router: Router) => void;
 
 export type Handler = (req: Request, res: Response, next: NextFunction) => Promise<void> | void;
 
-export const permissions = ["User:Auth"] as const;
+const permissions =  [
+    'wildcard'
+] as const;
 
 export type Permission = typeof permissions[number];
 
