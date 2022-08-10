@@ -4,9 +4,6 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@databases/mysql": "^5.2.1",
-    "@databases/mysql-schema-cli": "^1.1.0",
-    "@databases/mysql-typed": "^1.0.0",
     "axios": "^0.24.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
@@ -35,8 +32,8 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts 8899",
-    "sync": "ts-node src/sync.ts",    
-    "generate": "npx @databases/mysql-schema-cli --database mysql://api:123456@localhost:3306/api --directory ./src/__generated__"
+    "sync": "ts-node src/sync.ts",
+    "generate": "typeorm-model-generator -h localhost -d api -p 3306 -u root -x 123456 -e mysql -o './src/database'"
   },
   "author": "",
   "license": "ISC"
