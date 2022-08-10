@@ -1,34 +1,16 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { SecurityPermission } from "./SecurityPermission";
-import { User } from "./User";
+import { Collection, Entity, ManyToMany, PrimaryKey, Property } from '@mikro-orm/core';
+import { SecurityPermission } from './SecurityPermission';
 
-@Entity("security_rank", { schema: "api" })
+@Entity()
 export class SecurityRank {
-  @PrimaryGeneratedColumn({ type: "smallint", name: "id", unsigned: true })
-  id: number;
 
-  @Column("varchar", { name: "name", nullable: true, length: 255 })
-  name: string | null;
+  @PrimaryKey({ columnType: 'smallint' })
+  id!: number;
 
-  @ManyToMany(
-    () => SecurityPermission,
-    (securityPermission) => securityPermission.securityRanks
-  )
-  @JoinTable({
-    name: "security_rank_permission",
-    joinColumns: [{ name: "rank_id", referencedColumnName: "id" }],
-    inverseJoinColumns: [{ name: "permission_id", referencedColumnName: "id" }],
-    schema: "api",
-  })
-  securityPermissions: SecurityPermission[];
+  @Property({ length: 255, nullable: true })
+  name?: string;
 
-  @OneToMany(() => User, (user) => user.rank2)
-  users: User[];
+  @ManyToMany({ entity: () => SecurityPermission, joinColumn: 'rank_id', inverseJoinColumn: 'permission_id' })
+  permission = new Collection<SecurityPermission>(this);
+
 }

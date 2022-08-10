@@ -1,20 +1,15 @@
-import { Column, Entity, ManyToMany } from "typeorm";
-import { SecurityRank } from "./SecurityRank";
+import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
 
-@Entity("security_permission", { schema: "api" })
+@Entity()
 export class SecurityPermission {
-  @Column("int", { primary: true, name: "id", unsigned: true })
-  id: number;
 
-  @Column("varchar", { name: "name", nullable: true, length: 255 })
-  name: string | null;
+  @PrimaryKey()
+  id!: number;
 
-  @Column("varchar", { name: "description", nullable: true, length: 255 })
-  description: string | null;
+  @Property({ length: 255, nullable: true })
+  name?: string;
 
-  @ManyToMany(
-    () => SecurityRank,
-    (securityRank) => securityRank.securityPermissions
-  )
-  securityRanks: SecurityRank[];
+  @Property({ length: 255, nullable: true })
+  description?: string;
+
 }

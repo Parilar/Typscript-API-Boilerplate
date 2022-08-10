@@ -3,8 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./src/mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
+  },
   "dependencies": {
+    "@mikro-orm/cli": "^5.3.1",
+    "@mikro-orm/core": "^5.3.1",
+    "@mikro-orm/entity-generator": "^5.3.1",
+    "@mikro-orm/mysql": "^5.3.1",
+    "@mikro-orm/reflection": "^5.3.1",
     "axios": "^0.24.0",
+    "bcrypt": "^5.0.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "discord.js": "^13.6.0",
@@ -18,7 +31,6 @@
     "mysql": "^2.18.1",
     "socket.io": "^4.3.2",
     "ts-node": "^10.2.1",
-    "typeorm": "^0.2.25",
     "typescript": "^4.5.4"
   },
   "devDependencies": {
@@ -32,8 +44,8 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts 8899",
-    "sync": "ts-node src/sync.ts",
-    "generate": "typeorm-model-generator -h localhost -d api -p 3306 -u root -x 123456 -e mysql -o './src/database'"
+    "sync": "ts-node src/syncTypes.ts",
+    "generate": "npx mikro-orm generate-entities -s --path=./src/database/entities"
   },
   "author": "",
   "license": "ISC"

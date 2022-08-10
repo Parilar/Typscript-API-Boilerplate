@@ -1,12 +1,13 @@
 import 'reflect-metadata';
 import http from 'http';
 import express from 'express';
-import { createConnection, getManager, getRepository } from 'typeorm';
 import cors from 'cors'
-
 import middleware from './api/middleware';
 import routes from './api/routes';
 import { applyMiddleware, applyRoutes } from './lib/routes';
+import { MikroORM, RequestContext } from '@mikro-orm/core';
+import { MySqlDriver } from '@mikro-orm/mysql';
+import config from './mikro-orm.config';
 
 const router = express();
 const server = http.createServer(router);
@@ -18,15 +19,17 @@ process.on('uncaughtException', function (err) {
     //TODO: Send email to administrator
 });
 
-createConnection()
-    .then(async (connection) => {
-        console.log('Database Connection established!');
+MikroORM.init<MySqlDriver>(config).then(async (orm) => {
+    console.log('Database Connection established!');
 
-        applyMiddleware(middleware, router);
-        
-        await applyRoutes(routes, router);
-        
-        server.listen(process.argv[2], () => console.log(`Server is running on Port ${process.argv[2]}...`));
-    })
-    .catch((error) => console.log(error));
-    
+    applyMiddleware(middleware, router);
+
+    router.use((req, res, next) => {
+        RequestContext.create(orm.em, next);
+    });
+
+    await applyRoutes(routes, router);
+ 
+    server.listen(process.argv[2], () => console.log(`Server is running on Port ${process.argv[2]}...`));
+})
+.catch((error) => console.log(error));

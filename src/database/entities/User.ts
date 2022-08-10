@@ -1,44 +1,31 @@
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { SecurityRank } from "./SecurityRank";
+import { Entity, ManyToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import { SecurityRank } from './SecurityRank';
 
-@Index("rank", ["rank"], {})
-@Entity("user", { schema: "api" })
+@Entity()
 export class User {
-  @PrimaryGeneratedColumn({ type: "int", name: "id", unsigned: true })
-  id: number;
 
-  @Column("varchar", { name: "username", nullable: true, length: 255 })
-  username: string | null;
+  @PrimaryKey()
+  id!: number;
 
-  @Column("varchar", { name: "email", nullable: true, length: 255 })
-  email: string | null;
+  @Property({ length: 255, nullable: true })
+  username?: string;
 
-  @Column("varchar", { name: "first_name", nullable: true, length: 255 })
-  firstName: string | null;
+  @Property({ length: 255, nullable: true })
+  email?: string;
 
-  @Column("varchar", { name: "last_name", nullable: true, length: 255 })
-  lastName: string | null;
+  @Property({ length: 255, nullable: true })
+  firstName?: string;
 
-  @Column("varchar", { name: "password", length: 255 })
-  password: string;
+  @Property({ length: 255, nullable: true })
+  lastName?: string;
 
-  @Column("varchar", { name: "password_hash", length: 255 })
-  passwordHash: string;
+  @Property({ length: 255 })
+  password!: string;
 
-  @Column("smallint", { name: "rank", nullable: true, unsigned: true })
-  rank: number | null;
+  @Property({ length: 255 })
+  passwordHash!: string;
 
-  @ManyToOne(() => SecurityRank, (securityRank) => securityRank.users, {
-    onDelete: "CASCADE",
-    onUpdate: "CASCADE",
-  })
-  @JoinColumn([{ name: "rank", referencedColumnName: "id" }])
-  rank2: SecurityRank;
+  @ManyToOne({ entity: () => SecurityRank, fieldName: 'rank', onUpdateIntegrity: 'cascade', onDelete: 'cascade', nullable: true, index: 'rank' })
+  rank?: SecurityRank;
+
 }

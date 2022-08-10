@@ -1,6 +1,6 @@
+import { RequestContext } from '@mikro-orm/core';
 import { Response, Request } from 'express';
 import jwt from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
 import config from '../../config';
 import { User } from '../../database/entities/User';
 import { ranks } from '../../lib/routes';
@@ -13,13 +13,13 @@ const Routes : Route[] = [
         method: 'get',
         secure: true,
         permission : 'wildcard',
-        handler: async (req: Request, res: Response) => {      
-            var user = await getRepository(User).findOne ({ where : {id : (req.payload as RequestPayload).userId}})
+        handler: async (req: Request, res: Response) => {
+            var user = await RequestContext.getEntityManager().findOne(User, {id: (req.payload as RequestPayload).userId});            
             if(user){
                 res.status(200).send(
                     {
                         user: user,
-                        permissions: ranks.get(user.rank).securityPermissions.map(a => a.name)
+                        permissions: user.rank.permission.getItems().map(a => a.name)
                     }
                 )
             }else{
@@ -38,13 +38,13 @@ const Routes : Route[] = [
             var user;
 
             if(email){
-                user = await getRepository(User).findOne(
+                user = await RequestContext.getEntityManager().findOne(User,
                     {
                         email: email,                    
                     }
                 )
             }else if(username){
-                user = getRepository(User).findOne(
+                user = await RequestContext.getEntityManager().findOne(User,
                     {
                         username: username,                    
                     }
@@ -68,7 +68,7 @@ const Routes : Route[] = [
                         user: user,
                         token: token,
                         expiresIn: expiresIn,
-                        permissions: ranks.get(user.rank).securityPermissions.map(a => a.name)
+                        permissions: user.rank.permission.getItems().map(a => a.name)
                     });
                 }else{
                     res.status(500).send({ error: 'Wrong password' });
@@ -76,6 +76,16 @@ const Routes : Route[] = [
             }else{
                 res.status(500).send({ error: 'Wrong password' });
             }
+        }
+    },
+    {
+        path: '/auth/register',
+        method: 'post',
+        secure: false,
+        permission : 'wildcard',
+        handler: async (req: Request, res: Response) => {
+            const { email, username, password } = req.body;
+
         }
     },
 

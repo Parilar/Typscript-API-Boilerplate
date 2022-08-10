@@ -2,7 +2,6 @@ import { Router, Response, NextFunction, Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { RequestPayload, Wrapper, Route } from '../types';
 import config from '../config';
-import { getRepository } from 'typeorm';
 import { SecurityRank } from '../database/entities/SecurityRank';
 
 export let ranks = new Map<number, SecurityRank>();
@@ -51,7 +50,7 @@ function checkSecurity(req: Request, res: Response, next: NextFunction) {
 function checkPermission(_permission: string) {
     return (req: Request, res, next) => {
         var rank = ranks.get(req.payload.rank);
-        var permission = rank.securityPermissions.find(e => e.name === _permission);
+        var permission = rank.permission.getItems().find(e => e.name === _permission);
 
         if(permission != null){
             return next();
@@ -64,6 +63,6 @@ function checkPermission(_permission: string) {
 }
 
 async function setupPermissions() {
-    var data = await getRepository(SecurityRank).find({relations : ['securityPermissions']});
-    ranks = new Map(data.map(i => [i.id, i]));
+    //var data = await security_rank(db).find().all();    
+    //ranks = new Map(data.map(i => [i.id, i]));
 }

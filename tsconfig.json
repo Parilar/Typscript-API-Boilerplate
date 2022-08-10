@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es5",
-      "es6"
-   ],
-    "target": "es5",
     "module": "commonjs",
-    "moduleResolution": "node",
+    "declaration": true,
+    "noImplicitAny": false,
+    "removeComments": true,
+    "noLib": false,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "target": "es6",
     "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
     "esModuleInterop": true
-  }
+  },
 }

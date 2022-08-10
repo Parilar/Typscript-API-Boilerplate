@@ -3,6 +3,7 @@ import cors from 'cors';
 import parser from 'body-parser';
 import compression from 'compression';
 import morgan from 'morgan';
+import { RequestContext } from '@mikro-orm/core';
 
 export const handleCors = (router: Router) => router.use(cors());
 
@@ -19,3 +20,5 @@ export const handleCompression = (router: Router) => {
 export const logger = (router: Router) => {
     router.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 };
+
+
