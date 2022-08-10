@@ -7,7 +7,7 @@ Coming soon
 Coming soon
 
 ##  Todos
-- [X] Basic code structure
+- [ ] Basic code structure
 - [ ] Description
 - [ ] Setup
 - [ ] Registration
